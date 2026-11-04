@@ -52,6 +52,7 @@ Every file in a trial shares a base `name`, e.g. `2026-11-03_a`.
 | `name.egf`, `name.egf2`, ... | Continuous data at 5 kHz, one file per channel | Header and binary |
 | `name.pos` | LED positions | Header and binary |
 | `name.ttl` | Digital input changes | Header and text |
+| `name.pos.ttl` | Timing LED changes, seen by the camera | Header and text |
 | `name.clu.N` | Cluster labels for tetrode N | Text, no LTX header |
 | `name_N.cut` or `name.N.cut` | Cluster labels for tetrode N | Text, no LTX header |
 
@@ -241,14 +242,14 @@ To get back to camera pixels: `camera_x = stored_x / scale + origin_x`.
 
 ### `.ttl`: digital events
 
-There are no headers beyond the common ones (and the timing headers in Open Ephys files). The data is text, with no
-count header. One line per change of a digital input:
+The data is text, with no count header. One line per change of a digital input, both up and down:
 
 ```text
 ttl_<line> <seconds> <state>
 ```
 
-For example, `ttl_2 0.01 1` means that line 2, numbered from 1, went high 0.01 s into the recording.
+For example, `ttl_2 0.01 1` means that line 2, numbered from 1, went up 0.01 s into the recording, and `ttl_2 0.02 0`
+means it went down again. Lines are numbered from 1, and `<state>` is `1` for up and `0` for down.
 
 Unlike other times in LTX, these are seconds, not ticks. Because data starts straight after the marker, the first event
 shares a line with it, and the last line's `\r\n` is followed by the usual `\r\ndata_end`:
@@ -259,6 +260,33 @@ ttl_2 0.02 0
 
 data_end
 ```
+
+ephys-rs says all this in the headers, beyond the common ones. Open Ephys files have the timing headers instead.
+
+| Key | Example | Meaning |
+| --- | --- | --- |
+| `ttl_format` | `ttl_<line> <seconds> <state>` | How each line reads |
+| `ttl_state_1` | `up` | What state `1` means |
+| `ttl_state_0` | `down` | What state `0` means |
+| `ttl_source` | `digital_inputs` | What changed: `digital_inputs`, or `timing_led` in `.pos.ttl` |
+| `ttl_seconds_from` | `recording_start` | What the seconds count from: `recording_start`, or `first_position` in `.pos.ttl` |
+
+### `.pos.ttl`: the timing LED
+
+An LED seen by the camera, for timing, written by ephys-rs if one's in use. It's read as a `.ttl`, with one line,
+`ttl_1`: up when the LED comes on, and down when it goes off.
+
+Its times are by the camera's clock, the same as `.pos`, and count from the first sample in `.pos`. They're still
+seconds, not ticks. The LED being on when recording starts gives no up, as it wasn't seen coming on.
+
+As well as the `.ttl` headers, it has the spot looked at, in camera pixels:
+
+| Key | Example | Meaning |
+| --- | --- | --- |
+| `timing_led_x`, `timing_led_y` | `600` | The spot's centre |
+| `timing_led_radius` | `10` | The spot's radius |
+| `timing_led_threshold` | `200` | What a pixel must be brighter than |
+| `timing_led_min_area` | `5` | How many pixels must be, for the LED to be on |
 
 ## Spike sorting files
 
