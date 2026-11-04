@@ -33,9 +33,9 @@ same arena or in different ones. Each trial is its own set of files sharing a na
 
 | Tool | Role | Files |
 | --- | --- | --- |
-| <img src="assets/waveform.svg" width="20" height="20" alt=""><br/> [Waveform](https://github.com/ChenNeuroscience/waveform) | Browser-based viewer and manual cluster editor | Reads `.set`, `.N`, `.pos`, `.cut`, `.clu.N`. Writes `.cut`, `.clu.N`. Never modifies the originals. |
-| <img src="assets/ltx-klusta.svg" width="20" height="20" alt=""><br/> [ltx-klusta](https://github.com/ChenNeuroscience/ltx-klusta) | Automatic spike clustering, derived from [KlustaKwik](https://github.com/klusta-team/klustakwik) | Reads `.N`. Writes `.clu.N`. |
-| <img src="assets/ephys-rs.svg" width="20" height="20" alt=""><br/> [ephys-rs](https://github.com/ChenNeuroscience/ephys-rs) | Recording software, partly derived from [Open Ephys](https://github.com/open-ephys) | Supports writing `.set`, `.N`, `.egf*`, `.pos`, `.ttl`. |
+| <img src="https://raw.githubusercontent.com/ChenNeuroscience/waveform/main/img/icon.svg" width="20" height="20" alt=""><br/> [Waveform](https://github.com/ChenNeuroscience/waveform) | Browser-based viewer and manual cluster editor | Reads `.set`, `.N`, `.pos`, `.cut`, `.clu.N`. Writes `.cut`, `.clu.N`. Never modifies the originals. |
+| <img src="https://raw.githubusercontent.com/ChenNeuroscience/ltx-klusta/main/assets/ltxk.svg" width="20" height="20" alt=""><br/> [ltx-klusta](https://github.com/ChenNeuroscience/ltx-klusta) | Automatic spike clustering, derived from [KlustaKwik](https://github.com/klusta-team/klustakwik) | Reads `.N`. Writes `.clu.N`. |
+| <img src="https://raw.githubusercontent.com/ChenNeuroscience/ephys-rs/main/assets/icon.svg" width="20" height="20" alt=""><br/> [ephys-rs](https://github.com/ChenNeuroscience/ephys-rs) | Recording software, partly derived from [Open Ephys](https://github.com/open-ephys) | Supports writing `.set`, `.N`, `.egf*`, `.pos`, `.ttl`. |
 
 Waveform can simulate somewhat realistic data and display it in one click: [try it here](https://chenneuroscience.github.io/waveform/).
 
@@ -209,7 +209,8 @@ Each sample is a 20-byte record, all big-endian:
 
 - **Missing positions.** A coordinate of **1023** means there is no usable position for that LED, and an LED that wasn't found
   also has an area of 0. Waveform treats an LED as missing if x or y is 1023, or its area is 0.
-- **Uncalibrated files.** Waveform requires `pixels_per_metre` to be positive, so it rejects a `.pos` with `NaN`.
+- **Uncalibrated files.** Waveform takes the largest dimension used to be 1 m for a `.pos` with `NaN`, with a warning, and
+  lets you set a value in its headers panel.
 
 **Coordinates.** Real camera coordinates can reach 1023 and beyond, so coordinates are stored relative to the crop's
 bounding box and scaled down if needed to fit 0–1022:
