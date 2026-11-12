@@ -39,6 +39,8 @@ same arena or in different ones. Each trial is its own set of files sharing a na
 
 Waveform can simulate somewhat realistic data and display it in one click: [try it here](https://chenneuroscience.github.io/waveform/).
 
+To get simulated LTX files on disk (`.set`, `.N`, `.pos`, `.cut`), run Waveform's `synthetic` CLI from a Waveform checkout: `cargo run --release --manifest-path core/Cargo.toml --features cli --bin synthetic -- OUT_DIR`. Add `--help` for options such as the seed, number of trials and tetrodes, duration and spike counts.
+
 ephys-rs can simulate somewhat realistic data in real time, so you can run through a whole recording session without any hardware. Its synthetic streams include an acquisition board, with spiking units over a theta rhythm, and a fake video feed of a mouse with two head LEDs running around a box, trailing its cable.
 
 ## The files in a trial
